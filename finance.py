@@ -20,8 +20,8 @@ class Finance:
             pass
 
     # Funkcja dodająca transakcje
-    def add_transcation(self, amount, date, transcation_type):
-        self.operations[len(self.operations) +1] = {"amount": amount, "date": date, "type": transcation_type}
+    def add_transcation(self, amount, date, transcation_type, transaction_category):
+        self.operations[len(self.operations) +1] = {"amount": amount, "date": date, "type": transcation_type, "category": transaction_category}
         self.balance += amount
         self.utils.save_transactions({"balance": self.balance, "operations": self.operations}, "data.json")
 
@@ -30,8 +30,13 @@ class Finance:
         print(f"Saldo: {self.balance}")
 
     # Funkcja wypisująca historię transakcji
-    def show_history(self):
+    def show_history(self, category=None, date=None):
         for key in self.operations:
             operation = self.operations[key]
+            if category is not None and category not in operation["category"]:
+                continue
+            if date is not None and date not in operation["date"]:
+                continue
             transaction_type = "wydatek" if operation['type'] == "expense" else "przychód"
-            print(f"Numer: {key}, Kwota: {operation['amount']}, Typ: {transaction_type}, Data: {operation['date']}")
+            print(
+                f"Numer: {key}, Kwota: {operation['amount']}, Typ: {transaction_type}, Data: {operation['date']}, Kategoria: {operation['category']}")

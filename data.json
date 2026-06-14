@@ -1,1 +1,1 @@
-{"balance": -90.0, "operations": {"1": {"amount": -30.0, "date": "2026-06-13", "type": "expense"}, "2": {"amount": -30.0, "date": "2026-06-13", "type": "expense"}, "3": {"amount": -30.0, "date": "2026-06-13", "type": "expense"}}}
+{"balance": -30.0, "operations": {"1": {"amount": -30.0, "date": "2026-06-14", "type": "expense", "category": "spotify"}}}
