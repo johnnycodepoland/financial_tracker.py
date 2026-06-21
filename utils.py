@@ -11,5 +11,5 @@ class Utils:
         with open(filename, 'r') as f:
             data = json.load(f)
             # Słownik składany, który pozwala nam zwięźle i szybko przekształcić słownik w inty
-            data["operations"] = {int(k): v for k, v in data["operations"].items()}
+            data["transactions"] = {int(k): v for k, v in data["transactions"].items()}
             return data

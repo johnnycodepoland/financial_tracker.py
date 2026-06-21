@@ -66,3 +66,24 @@ class Finance:
                 self.balance -= abs(amount)
             del self.transactions[id]
             self.utils.save_transactions({"balance": self.balance, "transactions": self.transactions}, "data.json")
+
+    def monthly_summary(self, month, year):
+        month = str(month)
+        # Korzystamy z funkcji .zfill(x) aby dodać zera z lewej strony, co ma na celu zwiększenie długości zmiennej
+        month = month.zfill(2)
+        year = str(year)
+        expense_amount = 0
+        income_amount = 0
+        count = 0
+
+        for key in self.transactions:
+            if self.transactions[key]["date"].split("-")[1] == month and self.transactions[key]["date"].split("-")[0] == year:
+                count += 1
+                if self.transactions[key]["type"] == "expense":
+                    expense_amount += self.transactions[key]["amount"]
+                elif self.transactions[key]["type"] == "income":
+                    income_amount += self.transactions[key]["amount"]
+        print(f"Miesiąc: {month}")
+        print(f"Kwota wpłat: {income_amount}")
+        print(f"Kwota wydatków: {expense_amount}")
+        print(f"Ilość transakcji: {count}")

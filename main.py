@@ -13,7 +13,8 @@ if __name__ == "__main__":
         print("3. Dodaj transakcję")
         print("4. Edytuj transakcje")
         print("5. Usuń transakcje")
-        print("6. Zamknij program")
+        print("6. Wyświetl miesięczne podsumowanie")
+        print("7. Zamknij program")
 
         choose = input("Wybierz akcję do wykonania: ")
 
@@ -140,6 +141,25 @@ if __name__ == "__main__":
                     else:
                         print("Podano nie poprawne id transakcji")
         elif choose == "6":
+            while True:
+                try:
+                    year = int(input("Podaj rok transakcji: "))
+                    break
+                except ValueError:
+                    print("Podano niepoprawny niepoprawny rok transakcji")
+                    continue
+            while True:
+                try:
+                    month = int(input("Podaj miesiąc transakcji (1-12): "))
+                    if month not in range(1, 13):
+                        print("Podano niepoprawny miesiąc transakcji")
+                        continue
+                    break
+                except ValueError:
+                    print("Podano niepoprawny niepoprawny miesiąc transakcji")
+                    continue
+            finance.monthly_summary(month, year)
+        elif choose == "7":
             print("Program za chwilę się wyłączy...")
             break
         else:
