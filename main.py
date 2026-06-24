@@ -53,13 +53,13 @@ if __name__ == "__main__":
             finance.show_history(category, date)
         elif choose == "3":
             while True:
-                transaction_type = input("Podaj typ transakcji (wydatek, przychód): ")
+                type = input("Podaj typ transakcji (wydatek, przychód): ")
 
-                if transaction_type == "wydatek":
-                    transaction_type = "expense"
+                if type == "wydatek":
+                    type = "expense"
                     break
-                elif transaction_type == "przychód":
-                    transaction_type = "income"
+                elif type == "przychód":
+                    type = "income"
                     break
                 else:
                     print("Podano niepoprawny typ transakcji")
@@ -68,12 +68,12 @@ if __name__ == "__main__":
             except ValueError:
                 print("Podaj poprawną kwotę transakcji")
                 continue
-            if transaction_type == "expense":
+            if type == "expense":
                 amount = 0 - amount
             category = input("Podaj kategorie transakcji: ")
-            finance.add_transcation(amount, str(datetime.date.today()), transaction_type, category)
+            finance.add_transaction(amount, str(datetime.date.today()), type, category)
         elif choose == "4":
-            if not finance.transactions:
+            if not finance.has_transactions():
                 print("Brak transakcji do edycji")
             else:
                 finance.show_history()
@@ -83,7 +83,8 @@ if __name__ == "__main__":
                         id = int(input("Podaj id transakcji, którą chcesz edytować: "))
                     except ValueError:
                         continue
-                    if id in finance.transactions:
+                    if finance.transaction_exists(id):
+                        done = True
                         while True:
                             category_of_edit = input("Podaj kategorie edycji (kwota, data, typ, kategoria): ")
                             if category_of_edit == "kwota":
@@ -98,22 +99,22 @@ if __name__ == "__main__":
                             elif category_of_edit == "data":
                                 try:
                                     date = str(input("Podaj nową datę transakcji (YYYY-MM-DD): "))
-                                    datetime.datetime.strptime(date, "%Y-%m-%d")  # ta funkcja pozwala nam
+                                    datetime.datetime.strptime(date, "%Y-%m-%d")  # ta funkcja pozwala nam sprawdzić, czy podajemy poprawny format daty
                                 except:
                                     print("Podano niepoprawny format daty")
                                 finance.edit_transaction(id, date)
                                 done = True
                                 break
                             elif category_of_edit == "typ":
-                                transaction_type = input("Podaj nowy typ transakcji (wydatek, przychód): ")
+                                type = input("Podaj nowy typ transakcji (wydatek, przychód): ")
 
-                                if transaction_type == "wydatek":
-                                    transaction_type = "expense"
-                                elif transaction_type == "przychód":
-                                    transaction_type = "income"
+                                if type == "wydatek":
+                                    type = "expense"
+                                elif type == "przychód":
+                                    type = "income"
                                 else:
                                     print("Podano niepoprawny typ transakcji")
-                                finance.edit_transaction(id, transaction_type)
+                                finance.edit_transaction(id, type)
                                 done = True
                                 break
                             elif category_of_edit == "kategoria":
@@ -126,7 +127,7 @@ if __name__ == "__main__":
                     else:
                         print("Podano nie poprawne id transakcji")
         elif choose == "5":
-            if not finance.transactions:
+            if not finance.has_transactions():
                 print("Brak transakcji do usunięcia")
             else:
                 finance.show_history()
@@ -135,7 +136,7 @@ if __name__ == "__main__":
                      id = int(input("Podaj id transakcji, którą chcesz edytować: "))
                     except ValueError:
                         continue
-                    if id in finance.transactions:
+                    if finance.transaction_exists(id):
                         finance.delete_transaction(id)
                         break
                     else:
@@ -160,6 +161,7 @@ if __name__ == "__main__":
                     continue
             finance.monthly_summary(month, year)
         elif choose == "7":
+            finance.close_connection()
             print("Program za chwilę się wyłączy...")
             break
         else:
