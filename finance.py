@@ -1,9 +1,11 @@
 import sqlite3
+import os
 
 class Finance:
     def __init__(self):
-        # Łączymy się z bazą danych
-        self.connection = sqlite3.connect("transactions.db")
+        # Łączymy się z bazą danych i blokujemy otwieranie bazy danych w folderze gui
+        db_path = os.path.join(os.path.dirname(__file__), "transactions.db")
+        self.connection = sqlite3.connect(db_path)
 
         # Tworzymy cursor
         self.cursor = self.connection.cursor()
@@ -28,8 +30,8 @@ class Finance:
         # Zapisujemy zmiany i kończymy połączenie
         self.connection.commit()
 
-    # Funkcja wypisująca aktualne saldo
-    def show_balance(self):
+    # Funkcja zwracająca aktualne saldo
+    def return_balance(self):
         # Wyciągamy sumę z wszystkich transakcji
         self.cursor.execute(
                 """SELECT SUM(amount) FROM transactions"""
@@ -39,7 +41,36 @@ class Finance:
             balance = 0
         else:
             balance = balance[0]
-        print(f"Saldo: {balance}")
+        return balance
+
+    # Funkcja zwracająca aktualną sumę wydatków
+    def return_income(self):
+        # Wyciągamy sumę z wszystkich wydatków
+        self.cursor.execute(
+                """SELECT SUM(amount) FROM transactions WHERE type = ?""",
+            ("income",)
+        )
+        income = self.cursor.fetchone()
+        if income[0] is None:
+            income = 0
+        else:
+            income = income[0]
+        return income
+
+    # Funkcja zwracająca aktualną sumę przychodów
+    def return_expense(self):
+        # Wyciągamy sumę z wszystkich przychodów
+        self.cursor.execute(
+                """SELECT SUM(amount) FROM transactions WHERE type = ?""",
+            ("expense",)
+        )
+        expense = self.cursor.fetchone()
+        if expense[0] is None:
+            expense = 0
+        else:
+            expense = expense[0]
+        return expense
+
     # Funkcja wypisująca historię transakcji
     def show_history(self, category=None, date=None):
         # Korzystamy z sortowania wbudowanego w sqlite3
@@ -63,9 +94,8 @@ class Finance:
                 """SELECT * FROM transactions"""
             )
         transactions = self.cursor.fetchall()
-        for transaction in transactions:
-            type = "wydatek" if transaction[3] == "expense" else "przychód"
-            print(f"ID transakcji: {transaction[0]}, Kwota: {transaction[1]}, Data: {transaction[2]}, Typ: {type}, Kategoria: {transaction[4]}")
+        return transactions
+
     # Funkcja umożliwiająca edycję transakcji
     def edit_transaction(self, id, amount=None, date=None, type=None, category=None):
         if amount is not None:
@@ -141,7 +171,7 @@ class Finance:
     def close_connection(self):
         self.connection.close()
 
-    # Funkcja sprawdzająca istnienie transakcji w danej bazie danych
+    # Funkcja sprawdzająca istnienie transakcji w bazie danych
     def has_transactions(self):
         self.cursor.execute(
             """ SELECT 1 FROM transactions LIMIT 1;"""
