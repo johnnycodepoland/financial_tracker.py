@@ -116,43 +116,85 @@ class MainWindow(QMainWindow):
         self.balance_label.setStyleSheet("background-color: white; border-radius: 10px; padding: 10px;")
 
         # Ustawiamy wielkość widgetu na balans
-        self.balance_label.setFixedSize(600, 120)
+        self.balance_label.setFixedSize(600, 150)
 
-        # Ustawiamy czcionkę i jej rozmiar
-        self.balance_label.setFont(QFont("Arial", 70))
+        # Ustawiamy czcionkę i jej rozmiar, dla widgetu na balans
+        self.balance_label.setFont(QFont("San Francisco", 70))
 
         # Dodajemy widget na wpłaty do górnego widgetu na treść
         top_layout.addWidget(self.balance_label)
 
-        # Dodajemy widget na wpłaty
-        self.income_label = QLabel(f"Wpłaty: {self.finance.return_income()}zł")
+        # Tworzymy kontener na wydatki
+        expense_container = QWidget()
 
-        # Ustawiamy styl widgetu na wpłaty
-        self.income_label.setStyleSheet("background-color: white; border-radius: 10px; padding: 10px;")
+        # Tworzymy layout na "kontener" na wpłaty
+        expense_layout = QVBoxLayout(expense_container)
 
-        # Ustawiamy wielkość widgetu na wpłaty
-        self.income_label.setFixedSize(400, 120)
+        # Ustawiamy customową odległość między widgetami
+        expense_layout.setSpacing(0)
 
-        # Ustawiamy czcionkę i jej rozmiar
-        self.income_label.setFont(QFont("Arial", 40))
+        # Tworzymy widget na nazwę miesiąca
+        month_widget_expense = QLabel("Wydatki (miesiąc):")
 
-        # Dodajemy widget na wpłaty do górnego widgetu na treść
-        top_layout.addWidget(self.income_label)
+        # Tworzymy widget na kwotę wpłat za dany miesiąc
+        self.amount_widget_expense = QLabel(f"{self.finance.return_expense()}zł")
 
-        # Dodajemy widget na wydatki
-        self.expense_label = QLabel(f"Wydatki: {self.finance.return_expense()}zł")
+        # Ustawiamy styl kontenera na wpłaty
+        expense_container.setStyleSheet("background-color: white; border-radius: 10px; padding: 10px;")
 
-        # Ustawiamy styl widgetu na wydatki
-        self.expense_label.setStyleSheet("background-color: white; border-radius: 10px; padding: 10px;")
+        # Dodajemy widget na nazwę miesiąca do layoutu "kontenera" na wpłaty
+        expense_layout.addWidget(month_widget_expense)
 
-        # Ustawiamy wielkość widgetu na wydatki
-        self.expense_label.setFixedSize(400, 120)
+        # Dodajemy widget na kwotę do layoutu "kontenera" na wpłaty
+        expense_layout.addWidget(self.amount_widget_expense)
 
-        # Ustawiamy czcionkę i jej rozmiar
-        self.expense_label.setFont(QFont("Arial", 40))
+        # Ustawiamy wielkość "kontenera" na wpłaty
+        expense_container.setFixedSize(400, 150)
 
-        # Dodajemy widget na wydatki do górnego widgetu na treść
-        top_layout.addWidget(self.expense_label)
+        # Ustawiamy czcionkę i jej rozmiar, dla widgetu na miesiąc
+        month_widget_expense.setFont(QFont("San Francisco", 30))
+
+        # Ustawiamy czcionkę i jej rozmiar, dla widgetu na kwotę
+        self.amount_widget_expense.setFont(QFont("San Francisco", 40))
+
+        # Dodajemy "kontener" na wpłaty do górnego widgetu na treść
+        top_layout.addWidget(expense_container)
+
+        # Tworzymy kontener na wpłaty
+        income_container = QWidget()
+
+        # Tworzymy layout na "kontener" na wpłaty
+        income_layout = QVBoxLayout(income_container)
+
+        # Ustawiamy customową odległość między widgetami
+        income_layout.setSpacing(0)
+
+        # Tworzymy widget na nazwę miesiąca
+        month_widget_income = QLabel("Wpłaty (miesiąc):")
+
+        # Tworzymy widget na kwotę wpłat za dany miesiąc
+        self.amount_widget_income = QLabel(f"{self.finance.return_income()}zł")
+
+        # Ustawiamy styl kontenera na wpłaty
+        income_container.setStyleSheet("background-color: white; border-radius: 10px; padding: 10px;")
+
+        # Dodajemy widget na nazwę miesiąca do layoutu "kontenera" na wpłaty
+        income_layout.addWidget(month_widget_income)
+
+        # Dodajemy widget na kwotę do layoutu "kontenera" na wpłaty
+        income_layout.addWidget(self.amount_widget_income)
+
+        # Ustawiamy wielkość "kontenera" na wpłaty
+        income_container.setFixedSize(400, 150)
+
+        # Ustawiamy czcionkę i jej rozmiar, dla widgetu na miesiąc
+        month_widget_income.setFont(QFont("San Francisco", 30))
+
+        # Ustawiamy czcionkę i jej rozmiar, dla widgetu na kwotę
+        self.amount_widget_income.setFont(QFont("San Francisco", 40))
+
+        # Dodajemy "kontener" na wpłaty do górnego widgetu na treść
+        top_layout.addWidget(income_container)
 
         # Wypychamy widget na saldo na maksa w lewo
         top_layout.addStretch()
@@ -234,9 +276,9 @@ class MainWindow(QMainWindow):
         # Ustawiamy na nowo wszystkie wartości widgetów
         self.balance_label.setText(f"Saldo: {self.finance.return_balance()}zł")
 
-        self.income_label.setText(f"Wpłaty: {self.finance.return_income()}zł")
+        self.amount_widget_income.setText(f"{self.finance.return_income()}zł")
 
-        self.expense_label.setText(f"Wydatki: {self.finance.return_expense()}zł")
+        self.amount_widget_expense.setText(f"{self.finance.return_expense()}zł")
 
         # Resetujemy liczbę wierszy
         self.history_table.setRowCount(0)

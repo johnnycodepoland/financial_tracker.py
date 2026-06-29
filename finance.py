@@ -1,3 +1,4 @@
+import datetime
 import sqlite3
 import os
 
@@ -43,12 +44,20 @@ class Finance:
             balance = balance[0]
         return balance
 
-    # Funkcja zwracająca aktualną sumę wydatków
+    # Funkcja zwracająca sumę przychodów, za aktualny miesiąc
     def return_income(self):
-        # Wyciągamy sumę z wszystkich wydatków
+        # Zapisujemy dzisiejszy miesiąc i rok
+        month = datetime.datetime.now().month
+        year = datetime.datetime.now().year
+        month = str(month)
+        # Korzystamy z funkcji .zfill(x) aby dodać zera z lewej strony, co ma na celu zwiększenie długości zmiennej
+        month = month.zfill(2)
+        year = str(year)
+
+        # Wyciągamy sumę z wszystkich przychodów
         self.cursor.execute(
-                """SELECT SUM(amount) FROM transactions WHERE type = ?""",
-            ("income",)
+                """SELECT SUM(amount) FROM transactions WHERE type = ? and strftime('%m', date) = ? AND strftime('%Y', date) = ?""",
+            ("income", month, year)
         )
         income = self.cursor.fetchone()
         if income[0] is None:
@@ -57,18 +66,28 @@ class Finance:
             income = income[0]
         return income
 
-    # Funkcja zwracająca aktualną sumę przychodów
+    # Funkcja zwracająca sumę wydatków, za aktualny miesiąc
     def return_expense(self):
+        # Zapisujemy dzisiejszy miesiąc i rok
+        month = datetime.datetime.now().month
+        year = datetime.datetime.now().year
+        month = str(month)
+        # Korzystamy z funkcji .zfill(x) aby dodać zera z lewej strony, co ma na celu zwiększenie długości zmiennej
+        month = month.zfill(2)
+        year = str(year)
+
         # Wyciągamy sumę z wszystkich przychodów
         self.cursor.execute(
-                """SELECT SUM(amount) FROM transactions WHERE type = ?""",
-            ("expense",)
+                """SELECT SUM(amount) FROM transactions WHERE type = ? and strftime('%m', date) = ? AND strftime('%Y', date) = ?""",
+            ("expense", month, year)
         )
         expense = self.cursor.fetchone()
         if expense[0] is None:
             expense = 0
         else:
             expense = expense[0]
+        # Wyciągamy wartośc bezwzględną z kwoty wydatków, aby wyświetlała się poprawnie na dashboardzie
+        expense = abs(expense)
         return expense
 
     # Funkcja wypisująca historię transakcji
@@ -152,12 +171,12 @@ class Finance:
         )
         count = self.cursor.fetchone()
         self.cursor.execute(
-            """SELECT SUM(amount) FROM transactions WHERE type = 'income' and strftime('%m', date) = ? AND strftime('%Y', date) = ?""",
+            """SELECT SUM(amount) FROM transactions WHERE type = 'income' AND strftime('%m', date) = ? AND strftime('%Y', date) = ?""",
             (month, year)
         )
         income_amount = self.cursor.fetchone()
         self.cursor.execute(
-            """SELECT SUM(amount) FROM transactions WHERE type = 'expense' and strftime('%m', date) = ? AND strftime('%Y', date) = ?""",
+            """SELECT SUM(amount) FROM transactions WHERE type = 'expense' AND strftime('%m', date) = ? AND strftime('%Y', date) = ?""",
             (month, year)
         )
         expense_amount = self.cursor.fetchone()
