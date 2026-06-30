@@ -1,5 +1,5 @@
 from PyQt6.QtWidgets import QDialog, QWidget, QVBoxLayout, QTableWidget, QAbstractItemView, QHeaderView, QTableWidgetItem
-from edit_transaction_dialog import EditTransactionDialog
+from gui.edit_transaction_dialog import EditTransactionDialog
 
 class TransactionHistory(QWidget):
     def __init__(self, finance):

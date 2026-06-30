@@ -2,8 +2,8 @@ import sys
 from finance import Finance
 from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QTabWidget, QPushButton, QHBoxLayout, QLabel, QTableWidget, QHeaderView, QTableWidgetItem, QAbstractItemView
 from PyQt6.QtGui import QFont
-from add_transaction_dialog import AddTransactionDialog
-from transaction_history import TransactionHistory
+from gui.add_transaction_dialog import AddTransactionDialog
+from gui.transaction_history import TransactionHistory
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -393,9 +393,4 @@ class MainWindow(QMainWindow):
             type = "wydatek" if transaction[3] == "expense" else "przychód"
             self.history_table.setItem(row, 2, QTableWidgetItem(type))
             self.history_table.setItem(row, 3, QTableWidgetItem(str(transaction[4])))
-
-app = QApplication(sys.argv)
-window = MainWindow()
-window.show()
-sys.exit(app.exec())
 
