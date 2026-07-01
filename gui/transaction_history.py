@@ -1,5 +1,8 @@
+from tracemalloc import Filter
+
 from PyQt6.QtWidgets import QDialog, QWidget, QVBoxLayout, QTableWidget, QAbstractItemView, QHeaderView, QTableWidgetItem
 from gui.edit_transaction_dialog import EditTransactionDialog
+from gui.filter_transaction_dialog import FilterTransactionDialog
 
 class TransactionHistory(QWidget):
     def __init__(self, finance):
@@ -110,13 +113,28 @@ class TransactionHistory(QWidget):
         # Odświeżamy tabele z historią transakcji
         self.refresh_history_table()
 
+    def open_filter_dialog(self):
+        # Inicjalizujemy klasę FilterTransactionHistory
+        filter = FilterTransactionDialog()
+
+        # Korzystamy z metody QDialog exec(), która pozwoli nam wyświetlić formularz dodawania transakcji, blokująć przy tym korzystanie z wszytkich innych okien aplikacji
+        filter.exec()
+
+        # Zapisujemy dane z formularza do zmiennych, które zostaną wykorzystane przez refresh_history_table
+        type = filter.type
+
+        category = filter.category
+
+        # Odświeżamy tabele z historią transakcji
+        self.refresh_history_table(type, category)
+
     # Dodajemy funkcję, która odświeży nam historię transakcji po jakiejś aktywności np. usunięciu transakcji
-    def refresh_history_table(self):
+    def refresh_history_table(self, type=None, category=None):
         # Resetujemy liczbę wierszy
         self.history_table.setRowCount(0)
 
         # Importujemy wszystkie transakcje, korzystając z funkcji show_history()
-        transactions = self.finance.show_history()
+        transactions = self.finance.show_history(type=type, category=category)
 
         # Iterujemy przez wszystkie transakcje, aby dodać je do tabeli z ostatnimi transakcjami
         for transaction in transactions:

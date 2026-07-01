@@ -91,22 +91,22 @@ class Finance:
         return expense
 
     # Funkcja wypisująca historię transakcji
-    def show_history(self, category=None, date=None):
+    def show_history(self, category=None, type=None):
         # Korzystamy z sortowania wbudowanego w sqlite3
-        if category is not None and date is not None:
+        if category is not None and type is not None:
             self.cursor.execute(
-                """SELECT * FROM transactions WHERE category = ? AND date = ?""",
-                (category, date,)
+                """SELECT * FROM transactions WHERE category = ? AND type = ?""",
+                (category, type,)
             )
         elif category is not None:
             self.cursor.execute(
                 """SELECT * FROM transactions WHERE category = ?""",
                 (category,)
             )
-        elif date is not None:
+        elif type is not None:
             self.cursor.execute(
-                """SELECT * FROM transactions WHERE date = ?""",
-                (date,)
+                """SELECT * FROM transactions WHERE type = ?""",
+                (type,)
             )
         else:
             self.cursor.execute(

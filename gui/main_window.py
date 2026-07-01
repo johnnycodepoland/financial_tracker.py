@@ -1,4 +1,3 @@
-import sys
 from finance import Finance
 from PyQt6.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QTabWidget, QPushButton, QHBoxLayout, QLabel, QTableWidget, QHeaderView, QTableWidgetItem, QAbstractItemView
 from PyQt6.QtGui import QFont
@@ -71,10 +70,21 @@ class MainWindow(QMainWindow):
         # Dodajemy delete_button do layoutu na zakładki
         self.tab_layout.addWidget(self.delete_button)
 
-        # Ustawiamy widoczność przycisków "Dodaj transakcje" i "Edytuj transakcje" na False
+        # Dodajemy przycisk "Filtruj transakcję"
+        self.filter_button = QPushButton("Filtruj transakcje")
+
+        # Korzystamy z funkcji clicked, która wykonuje konkretną funkcję po kliknięciu danego przycisku, korzystamy z niej jako referencji, czyli informujemy program o tym, że ma się ona wykonać dopiero wtedy, kiedy zostanie spełniony jakiś warunek
+        self.filter_button.clicked.connect(self.on_filter_clicked)
+
+        # Dodajemy delete_button do layoutu na zakładki
+        self.tab_layout.addWidget(self.filter_button)
+
+        # Ustawiamy widoczność przycisków "Usuń transakcje", "Edytuj transakcje" i "Filtruj transakcje" na False
         self.edit_button.setVisible(False)
 
         self.delete_button.setVisible(False)
+
+        self.filter_button.setVisible(False)
 
         # Przesuwamy przycisk na maksa w lewo
         self.tab_layout.addStretch()
@@ -296,10 +306,10 @@ class MainWindow(QMainWindow):
     # Ta funkcji pozwoli nam uniknąć otwierania okna dodawania transakcji za każdym razem po włączeniu programu
     def open_add_transaction_dialog(self):
         # Inicjalizujemy klasę AddTransactionDialog
-        dialog = AddTransactionDialog(self.finance)
+        add = AddTransactionDialog(self.finance)
 
         # Korzystamy z metody QDialog exec(), która pozwoli nam wyświetlić formularz dodawania transakcji, blokująć przy tym korzystanie z wszytkich innych okien aplikacji
-        dialog.exec()
+        add.exec()
 
         if self.current_tab == "Dashboard":
             # Korzystamy z funkcji refresh_dashboard, do odświeżenia dashboardu
@@ -324,10 +334,12 @@ class MainWindow(QMainWindow):
 
         self.current_tab = "Transactions"
 
-        # Ustawiamy widoczność przycisków "Dodaj transakcje" i "Edytuj transakcje" na True
+        # Ustawiamy widoczność przycisków "Usuń transakcje", "Edytuj transakcje" i "Filtruj transakcje" na True
         self.edit_button.setVisible(True)
 
         self.delete_button.setVisible(True)
+
+        self.filter_button.setVisible(True)
 
     # Ta funkcji wróci nam do głównego widgetu dashboard, o ile wszystkie wymagane warunki zostaną spełnione
     def show_dashboard(self):
@@ -341,10 +353,12 @@ class MainWindow(QMainWindow):
         # Ustawiamy widoczność widgetu na treść na True
         self.content_widget.setVisible(True)
 
-        # Ustawiamy widoczność przycisków "Dodaj transakcje" i "Edytuj transakcje" na False
+        # Ustawiamy widoczność przycisków "Usuń transakcje", "Edytuj transakcje" i "Filtruj transakcje" na False
         self.edit_button.setVisible(False)
 
         self.delete_button.setVisible(False)
+
+        self.filter_button.setVisible(False)
 
         # Odświeżamy dashboard
         self.refresh_dashboard()
@@ -367,6 +381,14 @@ class MainWindow(QMainWindow):
 
         # Wywołujemy okno do edycji transakcji
         self.history.open_edit_dialog()
+
+    def on_filter_clicked(self):
+        # Sprawdzamy aktualnie otwartą zakładkę
+        if self.current_tab == "Dashboard":
+            return
+
+        # Wywołujemy okno do edycji transakcji
+        self.history.open_filter_dialog()
 
     # Tworzymy funkcje do odświeżania dashboardu
     def refresh_dashboard(self):
